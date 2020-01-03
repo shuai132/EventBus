@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
 
+option(EventBus_With_Install "" ON)
+
 # Use ';' to specify multiple e.g. ZIP;TGZ;DEB
 set(CPACK_GENERATOR "" CACHE STRING "Set packages CPack should build e.g. ZIP;TGZ;DEB")
 
@@ -38,7 +40,7 @@ add_library(EventBus
 	)
 add_library(Dexode::EventBus ALIAS EventBus)
 
-target_compile_features(EventBus PUBLIC cxx_std_14)
+target_compile_features(EventBus PRIVATE cxx_std_14)
 
 target_include_directories(EventBus PUBLIC
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/>
@@ -61,6 +63,7 @@ set(project_config "${generated_dir}/${PROJECT_NAME}Config.cmake")
 set(TARGETS_EXPORT_NAME "${PROJECT_NAME}Targets")
 set(namespace "Dexode::")
 
+if(EventBus_With_Install)
 # Targets:
 #   * <prefix>/lib/libEventBus.a
 #   * header location after install: <prefix>/include/eventbus/EventBus.h
@@ -117,4 +120,5 @@ install(EXPORT "${TARGETS_EXPORT_NAME}"
 if(NOT CPACK_GENERATOR STREQUAL "")
 	include("cmake/EventBus_CPack.cmake")
 	enable_cpack(${CPACK_GENERATOR})
+endif()
 endif()
